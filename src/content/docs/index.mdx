@@ -1,36 +1,54 @@
 ---
-title: Welcome to Starlight
-description: Get started building your docs site with Starlight.
+title: fn-pasta
+description: Copy-pastable JavaScript utility functions
 template: splash
 hero:
-  tagline: Congrats on setting up a new Starlight project!
+  tagline: A collection of utility functions you can copy and paste directly into your projects
   image:
-    file: ../../assets/houston.webp
+    file: ../../assets/fn-pasta-logo.svg
   actions:
-    - text: Example Guide
-      link: /guides/example/
+    - text: Get Started
+      link: /guides/introduction/
       icon: right-arrow
-    - text: Read the Starlight docs
-      link: https://starlight.astro.build
-      icon: external
-      variant: minimal
+      variant: primary
+    - text: View on GitHub
+      link: https://github.com/yourusername/fn-pasta
+      icon: github
+      variant: secondary
 ---
 
 import { Card, CardGrid } from '@astrojs/starlight/components';
 
-## Next steps
+## Why fn-pasta?
 
 <CardGrid stagger>
-	<Card title="Update content" icon="pencil">
-		Edit `src/content/docs/index.mdx` to see this page change.
+	<Card title="No Dependencies" icon="approve-check">
+		Just copy the function you need. No package installation required.
 	</Card>
-	<Card title="Add new content" icon="add-document">
-		Add Markdown or MDX files to `src/content/docs` to create new pages.
+	<Card title="Well-Documented" icon="document">
+		Each function comes with clear documentation and examples.
 	</Card>
-	<Card title="Configure your site" icon="setting">
-		Edit your `sidebar` and other config in `astro.config.mjs`.
+	<Card title="Typed" icon="setting">
+		All functions include TypeScript typings for better developer experience.
 	</Card>
-	<Card title="Read the docs" icon="open-book">
-		Learn more in [the Starlight Docs](https://starlight.astro.build/).
+	<Card title="Small Footprint" icon="rocket">
+		Only use what you need - no bloat in your codebase.
+	</Card>
+</CardGrid>
+
+## Featured Functions
+
+<CardGrid>
+	<Card title="Array" icon="add-document">
+		Functions for array manipulation, filtering, mapping, and more.
+	</Card>
+	<Card title="Object" icon="setting">
+		Functions for working with objects, deep cloning, merging, and more.
+	</Card>
+	<Card title="String" icon="pencil">
+		String manipulation, formatting, validation, and more.
+	</Card>
+	<Card title="Utility" icon="open-book">
+		General purpose utility functions for common tasks.
 	</Card>
 </CardGrid>

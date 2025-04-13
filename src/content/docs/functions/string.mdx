@@ -1,0 +1,149 @@
+---
+title: String Functions
+description: Utility functions for string manipulation
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import CopyButton from '../../../components/CopyButton.astro';
+
+# String Functions
+
+A collection of utility functions for working with strings.
+
+## truncate
+
+Truncates a string if it's longer than the maximum length.
+
+<Tabs>
+  <TabItem label="Usage">
+  ```typescript
+  const longText = "This is a very long text that needs to be truncated";
+  const truncated = truncate(longText, 20);
+  console.log(truncated); // "This is a very long..."
+  ```
+  </TabItem>
+  <TabItem label="Code">
+  ```typescript
+  /**
+   * Truncates a string if it's longer than the maximum length
+   * @param str - The string to truncate
+   * @param maxLength - Maximum length before truncation
+   * @param ellipsis - String to use as ellipsis
+   * @returns Truncated string
+   */
+  function truncate(
+    str: string,
+    maxLength: number,
+    ellipsis: string = '...'
+  ): string {
+    if (str.length <= maxLength) {
+      return str;
+    }
+    
+    return str.slice(0, maxLength - ellipsis.length) + ellipsis;
+  }
+  ```
+  <CopyButton code={`/**
+ * Truncates a string if it's longer than the maximum length
+ * @param str - The string to truncate
+ * @param maxLength - Maximum length before truncation
+ * @param ellipsis - String to use as ellipsis
+ * @returns Truncated string
+ */
+function truncate(
+  str: string,
+  maxLength: number,
+  ellipsis: string = "..."
+): string {
+  if (str.length <= maxLength) {
+    return str;
+  }
+  
+  return str.slice(0, maxLength - ellipsis.length) + ellipsis;
+}`} />
+  </TabItem>
+</Tabs>
+
+## slugify
+
+Converts a string to a URL-friendly slug.
+
+<Tabs>
+  <TabItem label="Usage">
+  ```typescript
+  const title = "Hello World! This is a Test";
+  const slug = slugify(title);
+  console.log(slug); // "hello-world-this-is-a-test"
+  ```
+  </TabItem>
+  <TabItem label="Code">
+  ```typescript
+  /**
+   * Converts a string to a URL-friendly slug
+   * @param str - The string to convert
+   * @returns URL-friendly slug
+   */
+  function slugify(str: string): string {
+    return str
+      .toLowerCase()
+      .replace(/[^\w\s-]/g, '') // Remove non-word chars
+      .replace(/[\s_-]+/g, '-') // Replace spaces and underscores with hyphens
+      .replace(/^-+|-+$/g, ''); // Remove leading/trailing hyphens
+  }
+  ```
+  <CopyButton code={`/**
+ * Converts a string to a URL-friendly slug
+ * @param str - The string to convert
+ * @returns URL-friendly slug
+ */
+function slugify(str: string): string {
+  return str
+    .toLowerCase()
+    .replace(/[^\\w\\s-]/g, "") // Remove non-word chars
+    .replace(/[\\s_-]+/g, "-") // Replace spaces and underscores with hyphens
+    .replace(/^-+|-+$/g, ""); // Remove leading/trailing hyphens
+}`} />
+  </TabItem>
+</Tabs>
+
+## capitalize
+
+Capitalizes the first letter of a string.
+
+<Tabs>
+  <TabItem label="Usage">
+  ```typescript
+  const text = "hello world";
+  const capitalized = capitalize(text);
+  console.log(capitalized); // "Hello world"
+  ```
+  </TabItem>
+  <TabItem label="Code">
+  ```typescript
+  /**
+   * Capitalizes the first letter of a string
+   * @param str - The string to capitalize
+   * @returns Capitalized string
+   */
+  function capitalize(str: string): string {
+    if (!str.length) {
+      return str;
+    }
+    
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+  ```
+  <CopyButton code={`/**
+ * Capitalizes the first letter of a string
+ * @param str - The string to capitalize
+ * @returns Capitalized string
+ */
+function capitalize(str: string): string {
+  if (!str.length) {
+    return str;
+  }
+  
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}`} />
+  </TabItem>
+</Tabs> 

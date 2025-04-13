@@ -1,0 +1,273 @@
+---
+title: Utility Functions
+description: General purpose utility functions
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import CopyButton from '../../../components/CopyButton.astro';
+
+# Utility Functions
+
+A collection of general-purpose utility functions.
+
+## debounce
+
+Creates a debounced function that delays invoking the provided function until after the specified wait time.
+
+<Tabs>
+  <TabItem label="Usage">
+  ```typescript
+  // Only executes the callback after 300ms have passed without it being called again
+  const debouncedSearch = debounce((query) => {
+    console.log(`Searching for: ${query}`);
+    // Perform search operation
+  }, 300);
+  
+  // Call this as often as needed
+  searchInput.addEventListener('input', (e) => {
+    debouncedSearch(e.target.value);
+  });
+  ```
+  </TabItem>
+  <TabItem label="Code">
+  ```typescript
+  /**
+   * Creates a debounced function that delays invoking func until after wait milliseconds
+   * @param func - The function to debounce
+   * @param wait - The number of milliseconds to delay
+   * @returns Debounced function
+   */
+  function debounce<T extends (...args: any[]) => any>(
+    func: T,
+    wait: number
+  ): (...args: Parameters<T>) => void {
+    let timeout: number | undefined;
+    
+    return function(this: any, ...args: Parameters<T>) {
+      const context = this;
+      
+      clearTimeout(timeout);
+      
+      timeout = window.setTimeout(() => {
+        func.apply(context, args);
+      }, wait);
+    };
+  }
+  ```
+  <CopyButton code={`/**
+ * Creates a debounced function that delays invoking func until after wait milliseconds
+ * @param func - The function to debounce
+ * @param wait - The number of milliseconds to delay
+ * @returns Debounced function
+ */
+function debounce<T extends (...args: any[]) => any>(
+  func: T,
+  wait: number
+): (...args: Parameters<T>) => void {
+  let timeout: number | undefined;
+  
+  return function(this: any, ...args: Parameters<T>) {
+    const context = this;
+    
+    clearTimeout(timeout);
+    
+    timeout = window.setTimeout(() => {
+      func.apply(context, args);
+    }, wait);
+  };
+}`} />
+  </TabItem>
+</Tabs>
+
+## memoize
+
+Creates a function that memoizes the result of a function call.
+
+<Tabs>
+  <TabItem label="Usage">
+  ```typescript
+  // Compute fibonacci numbers (expensive operation)
+  const fibonacci = (n: number): number => {
+    if (n <= 1) return n;
+    return fibonacci(n - 1) + fibonacci(n - 2);
+  };
+  
+  // Create a memoized version
+  const memoizedFib = memoize(fibonacci);
+  
+  console.time('First call');
+  memoizedFib(40); // This will take some time
+  console.timeEnd('First call');
+  
+  console.time('Second call');
+  memoizedFib(40); // This will be instant
+  console.timeEnd('Second call');
+  ```
+  </TabItem>
+  <TabItem label="Code">
+  ```typescript
+  /**
+   * Creates a function that memoizes the result of func
+   * @param func - The function to have its output memoized
+   * @returns Memoized function
+   */
+  function memoize<T extends (...args: any[]) => any>(
+    func: T
+  ): (...args: Parameters<T>) => ReturnType<T> {
+    const cache = new Map<string, ReturnType<T>>();
+    
+    return function(this: any, ...args: Parameters<T>): ReturnType<T> {
+      const key = JSON.stringify(args);
+      
+      if (cache.has(key)) {
+        return cache.get(key)!;
+      }
+      
+      const result = func.apply(this, args);
+      cache.set(key, result);
+      
+      return result;
+    };
+  }
+  ```
+  <CopyButton code={`/**
+ * Creates a function that memoizes the result of func
+ * @param func - The function to have its output memoized
+ * @returns Memoized function
+ */
+function memoize<T extends (...args: any[]) => any>(
+  func: T
+): (...args: Parameters<T>) => ReturnType<T> {
+  const cache = new Map<string, ReturnType<T>>();
+  
+  return function(this: any, ...args: Parameters<T>): ReturnType<T> {
+    const key = JSON.stringify(args);
+    
+    if (cache.has(key)) {
+      return cache.get(key)!;
+    }
+    
+    const result = func.apply(this, args);
+    cache.set(key, result);
+    
+    return result;
+  };
+}`} />
+  </TabItem>
+</Tabs>
+
+## retry
+
+Retries a function until it succeeds or reaches the maximum number of attempts.
+
+<Tabs>
+  <TabItem label="Usage">
+  ```typescript
+  // Function that might fail
+  const fetchData = async () => {
+    const random = Math.random();
+    if (random < 0.7) {
+      throw new Error('Failed to fetch data');
+    }
+    return { data: 'Success!' };
+  };
+  
+  // Retry the function
+  retry(fetchData, {
+    maxAttempts: 5,
+    delay: 1000,
+    onRetry: (error, attempt) => {
+      console.log(`Attempt ${attempt} failed: ${error.message}. Retrying...`);
+    }
+  })
+    .then(result => console.log('Success:', result))
+    .catch(error => console.error('All retries failed:', error));
+  ```
+  </TabItem>
+  <TabItem label="Code">
+  ```typescript
+  /**
+   * Configuration options for the retry function
+   */
+  interface RetryOptions {
+    maxAttempts: number;
+    delay?: number;
+    onRetry?: (error: Error, attempt: number) => void;
+  }
+  
+  /**
+   * Retries a function until it succeeds or reaches the maximum attempts
+   * @param fn - The function to retry
+   * @param options - Retry configuration options
+   * @returns Promise that resolves with the function result or rejects after all retries
+   */
+  async function retry<T>(
+    fn: () => Promise<T>,
+    options: RetryOptions
+  ): Promise<T> {
+    const { maxAttempts, delay = 0, onRetry } = options;
+    
+    let lastError: Error;
+    
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      try {
+        return await fn();
+      } catch (error) {
+        lastError = error as Error;
+        
+        if (onRetry) {
+          onRetry(lastError, attempt);
+        }
+        
+        if (attempt < maxAttempts) {
+          await new Promise(resolve => setTimeout(resolve, delay));
+        }
+      }
+    }
+    
+    throw lastError!;
+  }
+  ```
+  <CopyButton code={`/**
+ * Configuration options for the retry function
+ */
+interface RetryOptions {
+  maxAttempts: number;
+  delay?: number;
+  onRetry?: (error: Error, attempt: number) => void;
+}
+
+/**
+ * Retries a function until it succeeds or reaches the maximum attempts
+ * @param fn - The function to retry
+ * @param options - Retry configuration options
+ * @returns Promise that resolves with the function result or rejects after all retries
+ */
+async function retry<T>(
+  fn: () => Promise<T>,
+  options: RetryOptions
+): Promise<T> {
+  const { maxAttempts, delay = 0, onRetry } = options;
+  
+  let lastError: Error;
+  
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      return await fn();
+    } catch (error) {
+      lastError = error as Error;
+      
+      if (onRetry) {
+        onRetry(lastError, attempt);
+      }
+      
+      if (attempt < maxAttempts) {
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+    }
+  }
+  
+  throw lastError!;
+}`} />
+  </TabItem>
+</Tabs> 

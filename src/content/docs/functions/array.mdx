@@ -1,0 +1,164 @@
+---
+title: Array Functions
+description: Utility functions for array manipulation
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import CopyButton from '../../../components/CopyButton.astro';
+
+# Array Functions
+
+A collection of utility functions for working with arrays.
+
+## chunk
+
+Splits an array into chunks of the specified size.
+
+<Tabs>
+  <TabItem label="Usage">
+  ```typescript
+  const array = [1, 2, 3, 4, 5, 6, 7, 8];
+  const chunked = chunk(array, 3);
+  console.log(chunked); // [[1, 2, 3], [4, 5, 6], [7, 8]]
+  ```
+  </TabItem>
+  <TabItem label="Code">
+  ```typescript
+  /**
+   * Splits an array into chunks of the specified size
+   * @param array - The array to chunk
+   * @param size - The size of each chunk
+   * @returns An array of chunks
+   */
+  function chunk<T>(array: T[], size: number): T[][] {
+    if (!array.length || size <= 0) {
+      return [];
+    }
+    
+    const chunks: T[][] = [];
+    for (let i = 0; i < array.length; i += size) {
+      chunks.push(array.slice(i, i + size));
+    }
+    
+    return chunks;
+  }
+  ```
+  <CopyButton code={`/**
+ * Splits an array into chunks of the specified size
+ * @param array - The array to chunk
+ * @param size - The size of each chunk
+ * @returns An array of chunks
+ */
+function chunk<T>(array: T[], size: number): T[][] {
+  if (!array.length || size <= 0) {
+    return [];
+  }
+  
+  const chunks: T[][] = [];
+  for (let i = 0; i < array.length; i += size) {
+    chunks.push(array.slice(i, i + size));
+  }
+  
+  return chunks;
+}`} />
+  </TabItem>
+</Tabs>
+
+## unique
+
+Removes duplicate values from an array.
+
+<Tabs>
+  <TabItem label="Usage">
+  ```typescript
+  const array = [1, 2, 2, 3, 4, 4, 5];
+  const uniqueValues = unique(array);
+  console.log(uniqueValues); // [1, 2, 3, 4, 5]
+  ```
+  </TabItem>
+  <TabItem label="Code">
+  ```typescript
+  /**
+   * Removes duplicate values from an array
+   * @param array - The array to process
+   * @returns A new array with unique values
+   */
+  function unique<T>(array: T[]): T[] {
+    return [...new Set(array)];
+  }
+  ```
+  <CopyButton code={`/**
+ * Removes duplicate values from an array
+ * @param array - The array to process
+ * @returns A new array with unique values
+ */
+function unique<T>(array: T[]): T[] {
+  return [...new Set(array)];
+}`} />
+  </TabItem>
+</Tabs>
+
+## groupBy
+
+Groups array items based on a key function.
+
+<Tabs>
+  <TabItem label="Usage">
+  ```typescript
+  const people = [
+    { name: 'John', age: 25 },
+    { name: 'Jane', age: 30 },
+    { name: 'Jack', age: 25 }
+  ];
+  
+  const grouped = groupBy(people, person => person.age);
+  console.log(grouped);
+  // {
+  //   '25': [{ name: 'John', age: 25 }, { name: 'Jack', age: 25 }],
+  //   '30': [{ name: 'Jane', age: 30 }]
+  // }
+  ```
+  </TabItem>
+  <TabItem label="Code">
+  ```typescript
+  /**
+   * Groups array items based on a key function
+   * @param array - The array to group
+   * @param keyFn - Function that returns the grouping key for an item
+   * @returns An object with keys from keyFn and values as arrays of matching items
+   */
+  function groupBy<T, K extends string | number | symbol>(
+    array: T[],
+    keyFn: (item: T) => K
+  ): Record<K, T[]> {
+    return array.reduce((result, item) => {
+      const key = keyFn(item);
+      if (!result[key]) {
+        result[key] = [];
+      }
+      result[key].push(item);
+      return result;
+    }, {} as Record<K, T[]>);
+  }
+  ```
+  <CopyButton code={`/**
+ * Groups array items based on a key function
+ * @param array - The array to group
+ * @param keyFn - Function that returns the grouping key for an item
+ * @returns An object with keys from keyFn and values as arrays of matching items
+ */
+function groupBy<T, K extends string | number | symbol>(
+  array: T[],
+  keyFn: (item: T) => K
+): Record<K, T[]> {
+  return array.reduce((result, item) => {
+    const key = keyFn(item);
+    if (!result[key]) {
+      result[key] = [];
+    }
+    result[key].push(item);
+    return result;
+  }, {} as Record<K, T[]>);
+}`} />
+  </TabItem>
+</Tabs> 

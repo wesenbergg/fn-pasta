@@ -1,0 +1,224 @@
+---
+title: Object Functions
+description: Utility functions for working with objects
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import CopyButton from '../../../components/CopyButton.astro';
+
+# Object Functions
+
+A collection of utility functions for working with objects.
+
+## deepClone
+
+Creates a deep clone of an object or array.
+
+<Tabs>
+  <TabItem label="Usage">
+  ```typescript
+  const original = { 
+    name: 'John',
+    settings: { theme: 'dark', notifications: true },
+    tags: ['important', 'new']
+  };
+  
+  const cloned = deepClone(original);
+  console.log(cloned); // Deep copy of the original object
+  console.log(cloned === original); // false
+  console.log(cloned.settings === original.settings); // false
+  ```
+  </TabItem>
+  <TabItem label="Code">
+  ```typescript
+  /**
+   * Creates a deep clone of an object or array
+   * @param obj - The object to clone
+   * @returns A deep clone of the original object
+   */
+  function deepClone<T>(obj: T): T {
+    if (obj === null || typeof obj !== 'object') {
+      return obj;
+    }
+    
+    if (Array.isArray(obj)) {
+      return obj.map(item => deepClone(item)) as unknown as T;
+    }
+    
+    const result = {} as T;
+    for (const key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        result[key] = deepClone(obj[key]);
+      }
+    }
+    
+    return result;
+  }
+  ```
+  <CopyButton code={`/**
+ * Creates a deep clone of an object or array
+ * @param obj - The object to clone
+ * @returns A deep clone of the original object
+ */
+function deepClone<T>(obj: T): T {
+  if (obj === null || typeof obj !== "object") {
+    return obj;
+  }
+  
+  if (Array.isArray(obj)) {
+    return obj.map(item => deepClone(item)) as unknown as T;
+  }
+  
+  const result = {} as T;
+  for (const key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+      result[key] = deepClone(obj[key]);
+    }
+  }
+  
+  return result;
+}`} />
+  </TabItem>
+</Tabs>
+
+## pick
+
+Creates an object composed of the picked object properties.
+
+<Tabs>
+  <TabItem label="Usage">
+  ```typescript
+  const object = { a: 1, b: 2, c: 3, d: 4 };
+  const picked = pick(object, ['a', 'c']);
+  console.log(picked); // { a: 1, c: 3 }
+  ```
+  </TabItem>
+  <TabItem label="Code">
+  ```typescript
+  /**
+   * Creates an object composed of the picked object properties
+   * @param obj - The source object
+   * @param keys - The property names to pick
+   * @returns New object with just the picked properties
+   */
+  function pick<T extends object, K extends keyof T>(
+    obj: T,
+    keys: K[]
+  ): Pick<T, K> {
+    const result = {} as Pick<T, K>;
+    keys.forEach(key => {
+      if (key in obj) {
+        result[key] = obj[key];
+      }
+    });
+    return result;
+  }
+  ```
+  <CopyButton code={`/**
+ * Creates an object composed of the picked object properties
+ * @param obj - The source object
+ * @param keys - The property names to pick
+ * @returns New object with just the picked properties
+ */
+function pick<T extends object, K extends keyof T>(
+  obj: T,
+  keys: K[]
+): Pick<T, K> {
+  const result = {} as Pick<T, K>;
+  keys.forEach(key => {
+    if (key in obj) {
+      result[key] = obj[key];
+    }
+  });
+  return result;
+}`} />
+  </TabItem>
+</Tabs>
+
+## merge
+
+Deeply merges two objects.
+
+<Tabs>
+  <TabItem label="Usage">
+  ```typescript
+  const obj1 = { a: 1, b: { c: 2 } };
+  const obj2 = { b: { d: 3 }, e: 4 };
+  
+  const merged = merge(obj1, obj2);
+  console.log(merged); // { a: 1, b: { c: 2, d: 3 }, e: 4 }
+  ```
+  </TabItem>
+  <TabItem label="Code">
+  ```typescript
+  /**
+   * Deeply merges two objects
+   * @param target - The target object
+   * @param source - The source object
+   * @returns A new object with properties from both objects
+   */
+  function merge<T extends object, U extends object>(
+    target: T,
+    source: U
+  ): T & U {
+    const result = { ...target } as T & U;
+    
+    for (const key in source) {
+      const sourceValue = source[key];
+      
+      if (
+        typeof sourceValue === 'object' && 
+        sourceValue !== null && 
+        !Array.isArray(sourceValue) &&
+        typeof (target as any)[key] === 'object' && 
+        (target as any)[key] !== null &&
+        !Array.isArray((target as any)[key])
+      ) {
+        result[key as keyof (T & U)] = merge(
+          (target as any)[key],
+          sourceValue
+        ) as any;
+      } else {
+        result[key as keyof (T & U)] = sourceValue as any;
+      }
+    }
+    
+    return result;
+  }
+  ```
+  <CopyButton code={`/**
+ * Deeply merges two objects
+ * @param target - The target object
+ * @param source - The source object
+ * @returns A new object with properties from both objects
+ */
+function merge<T extends object, U extends object>(
+  target: T,
+  source: U
+): T & U {
+  const result = { ...target } as T & U;
+  
+  for (const key in source) {
+    const sourceValue = source[key];
+    
+    if (
+      typeof sourceValue === "object" && 
+      sourceValue !== null && 
+      !Array.isArray(sourceValue) &&
+      typeof (target as any)[key] === "object" && 
+      (target as any)[key] !== null &&
+      !Array.isArray((target as any)[key])
+    ) {
+      result[key as keyof (T & U)] = merge(
+        (target as any)[key],
+        sourceValue
+      ) as any;
+    } else {
+      result[key as keyof (T & U)] = sourceValue as any;
+    }
+  }
+  
+  return result;
+}`} />
+  </TabItem>
+</Tabs> 

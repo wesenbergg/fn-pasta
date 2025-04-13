@@ -1,0 +1,84 @@
+---
+title: Usage Guide
+description: How to use fn-pasta in your projects
+---
+
+# Using fn-pasta functions
+
+Using fn-pasta functions in your project is simple. Here's a step-by-step guide:
+
+## Finding functions
+
+1. Browse the categories in the sidebar
+2. Click on a category to see all related functions
+3. Read through the descriptions to find the function you need
+
+## Understanding functions
+
+Each function page includes:
+
+- Description of what the function does
+- TypeScript type signature
+- Parameters and return type explanation
+- Example usage
+- Implementation code
+
+## Copying functions
+
+1. Click the copy button next to the function code
+2. Paste the code directly into your project file
+3. Use the function as shown in the examples
+
+## Example
+
+Let's say you need a function to deep clone an object. You would:
+
+1. Navigate to the Object functions category
+2. Find the `deepClone` function
+3. Click the copy button
+4. Paste into your project:
+
+```typescript
+/**
+ * Creates a deep clone of an object or array
+ * @param obj - The object to clone
+ * @returns A deep clone of the original object
+ */
+function deepClone<T>(obj: T): T {
+  if (obj === null || typeof obj !== 'object') {
+    return obj;
+  }
+  
+  if (Array.isArray(obj)) {
+    return obj.map(item => deepClone(item)) as unknown as T;
+  }
+  
+  const result = {} as T;
+  for (const key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+      result[key] = deepClone(obj[key]);
+    }
+  }
+  
+  return result;
+}
+```
+
+5. Use it in your code:
+
+```typescript
+const originalObject = { 
+  name: 'John',
+  settings: { theme: 'dark', notifications: true },
+  tags: ['important', 'new']
+};
+
+const clonedObject = deepClone(originalObject);
+```
+
+## Best practices
+
+- Consider adding comments or attributing the function to fn-pasta
+- Review the function before using to ensure it meets your needs
+- Modify the function if necessary for your specific use case
+- Add tests for the function in your project's test suite 
