@@ -1,0 +1,66 @@
+---
+title: Date Functions
+description: Utility functions for working with dates
+---
+
+# Date Functions
+
+This section contains utility functions for working with dates.
+
+## formatDate
+
+Formats a date according to a specified format.
+
+```ts
+/**
+ * Formats a date according to a specified format
+ * @param date - The date to format
+ * @param options - Intl.DateTimeFormat options
+ * @param locale - The locale to use for formatting (default: 'en-US')
+ * @returns The formatted date string
+ */
+export function formatDate(
+  date: Date,
+  options: Intl.DateTimeFormatOptions = { 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric' 
+  },
+  locale: string = 'en-US'
+): string {
+  return new Intl.DateTimeFormat(locale, options).format(date);
+}
+```
+
+## isValidDate
+
+Checks if a value is a valid date.
+
+```ts
+/**
+ * Checks if a value is a valid date
+ * @param date - The value to check
+ * @returns True if the value is a valid date, false otherwise
+ */
+export function isValidDate(date: any): boolean {
+  return date instanceof Date && !isNaN(date.getTime());
+}
+```
+
+## addDays
+
+Adds a specified number of days to a date.
+
+```ts
+/**
+ * Adds a specified number of days to a date
+ * @param date - The base date
+ * @param days - The number of days to add
+ * @returns A new date with the days added
+ */
+export function addDays(date: Date, days: number): Date {
+  const result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
+}
+``` 
