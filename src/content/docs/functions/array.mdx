@@ -161,4 +161,80 @@ function groupBy<T, K extends string | number | symbol>(
   }, {} as Record<K, T[]>);
 }`} />
   </TabItem>
+</Tabs>
+
+## head
+
+Gets the first element of an array.
+
+<Tabs>
+  <TabItem label="Usage">
+  ```typescript
+  const array = [1, 2, 3, 4, 5];
+  const first = head(array);
+  console.log(first); // 1
+  
+  const emptyArray = [];
+  const emptyResult = head(emptyArray);
+  console.log(emptyResult); // undefined
+  ```
+  </TabItem>
+  <TabItem label="Code">
+  ```typescript
+  /**
+   * Gets the first element of an array
+   * @param array - The array to query
+   * @returns The first element of the array, or undefined if the array is empty
+   */
+  function head<T>(array: T[]): T | undefined {
+    return array[0];
+  }
+  ```
+  <CopyButton code={`/**
+ * Gets the first element of an array
+ * @param array - The array to query
+ * @returns The first element of the array, or undefined if the array is empty
+ */
+function head<T>(array: T[]): T | undefined {
+  return array[0];
+}`} />
+  </TabItem>
+</Tabs>
+
+## last
+
+Gets the last element of an array.
+
+<Tabs>
+  <TabItem label="Usage">
+  ```typescript
+  const array = [1, 2, 3, 4, 5];
+  const lastElement = last(array);
+  console.log(lastElement); // 5
+  
+  const emptyArray = [];
+  const emptyResult = last(emptyArray);
+  console.log(emptyResult); // undefined
+  ```
+  </TabItem>
+  <TabItem label="Code">
+  ```typescript
+  /**
+   * Gets the last element of an array
+   * @param array - The array to query
+   * @returns The last element of the array, or undefined if the array is empty
+   */
+  function last<T>(array: T[]): T | undefined {
+    return array.length ? array[array.length - 1] : undefined;
+  }
+  ```
+  <CopyButton code={`/**
+ * Gets the last element of an array
+ * @param array - The array to query
+ * @returns The last element of the array, or undefined if the array is empty
+ */
+function last<T>(array: T[]): T | undefined {
+  return array.length ? array[array.length - 1] : undefined;
+}`} />
+  </TabItem>
 </Tabs> 
