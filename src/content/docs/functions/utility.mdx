@@ -270,4 +270,337 @@ async function retry<T>(
   throw lastError!;
 }`} />
   </TabItem>
+</Tabs>
+
+## clone
+
+Creates a shallow clone of a value.
+
+<Tabs>
+  <TabItem label="Usage">
+  ```typescript
+  const original = { name: 'John', age: 30, hobbies: ['reading', 'gaming'] };
+  const cloned = clone(original);
+  
+  console.log(cloned); // { name: 'John', age: 30, hobbies: ['reading', 'gaming'] }
+  
+  // It's a shallow clone
+  console.log(cloned === original); // false
+  console.log(cloned.hobbies === original.hobbies); // true
+  
+  // Works with various data types
+  clone(new Date()); // Date object
+  clone(new Map()); // Map object
+  clone(new Set()); // Set object
+  clone(/abc/g); // RegExp object
+  clone(new Int32Array([1, 2, 3])); // TypedArray
+  ```
+  </TabItem>
+  <TabItem label="Code">
+  ```typescript
+  /**
+   * Creates a shallow clone of value
+   * @param value - The value to clone
+   * @returns A shallow clone of the value
+   */
+  function clone<T>(value: T): T {
+    // Handle primitive values and functions
+    if (value === null || typeof value !== 'object') {
+      return value;
+    }
+    
+    // Handle Date objects
+    if (value instanceof Date) {
+      return new Date(value.getTime()) as unknown as T;
+    }
+    
+    // Handle RegExp objects
+    if (value instanceof RegExp) {
+      return new RegExp(value.source, value.flags) as unknown as T;
+    }
+    
+    // Handle Array objects
+    if (Array.isArray(value)) {
+      return value.slice() as unknown as T;
+    }
+    
+    // Handle Map objects
+    if (value instanceof Map) {
+      return new Map(value) as unknown as T;
+    }
+    
+    // Handle Set objects
+    if (value instanceof Set) {
+      return new Set(value) as unknown as T;
+    }
+    
+    // Handle ArrayBuffer
+    if (value instanceof ArrayBuffer) {
+      return value.slice(0) as unknown as T;
+    }
+    
+    // Handle TypedArrays
+    if (
+      ArrayBuffer.isView(value) && 
+      !(value instanceof DataView)
+    ) {
+      // @ts-ignore: TypeScript doesn't know about the constructor property
+      return new value.constructor(
+        value.buffer.slice(0),
+        value.byteOffset,
+        value.length
+      ) as unknown as T;
+    }
+    
+    // Handle plain objects
+    return Object.assign({}, value);
+  }
+  ```
+  <CopyButton code={`/**
+ * Creates a shallow clone of value
+ * @param value - The value to clone
+ * @returns A shallow clone of the value
+ */
+function clone<T>(value: T): T {
+  // Handle primitive values and functions
+  if (value === null || typeof value !== 'object') {
+    return value;
+  }
+  
+  // Handle Date objects
+  if (value instanceof Date) {
+    return new Date(value.getTime()) as unknown as T;
+  }
+  
+  // Handle RegExp objects
+  if (value instanceof RegExp) {
+    return new RegExp(value.source, value.flags) as unknown as T;
+  }
+  
+  // Handle Array objects
+  if (Array.isArray(value)) {
+    return value.slice() as unknown as T;
+  }
+  
+  // Handle Map objects
+  if (value instanceof Map) {
+    return new Map(value) as unknown as T;
+  }
+  
+  // Handle Set objects
+  if (value instanceof Set) {
+    return new Set(value) as unknown as T;
+  }
+  
+  // Handle ArrayBuffer
+  if (value instanceof ArrayBuffer) {
+    return value.slice(0) as unknown as T;
+  }
+  
+  // Handle TypedArrays
+  if (
+    ArrayBuffer.isView(value) && 
+    !(value instanceof DataView)
+  ) {
+    // @ts-ignore: TypeScript doesn't know about the constructor property
+    return new value.constructor(
+      value.buffer.slice(0),
+      value.byteOffset,
+      value.length
+    ) as unknown as T;
+  }
+  
+  // Handle plain objects
+  return Object.assign({}, value);
+}`} />
+  </TabItem>
+</Tabs>
+
+## cloneDeep
+
+Creates a deep clone of a value.
+
+<Tabs>
+  <TabItem label="Usage">
+  ```typescript
+  const original = { 
+    name: 'John', 
+    address: { 
+      city: 'New York', 
+      country: 'USA' 
+    },
+    hobbies: ['reading', 'gaming']
+  };
+  
+  const cloned = cloneDeep(original);
+  
+  console.log(cloned); // Deep copy of the original
+  
+  // It's a deep clone
+  console.log(cloned === original); // false
+  console.log(cloned.address === original.address); // false
+  console.log(cloned.hobbies === original.hobbies); // false
+  
+  // Works with nested structures
+  const complex = {
+    date: new Date(),
+    regex: /test/g,
+    map: new Map([['key', 'value']]),
+    set: new Set([1, 2, 3]),
+    array: [1, 2, { nested: true }],
+    typedArray: new Uint8Array([1, 2, 3])
+  };
+  
+  const deepCloned = cloneDeep(complex);
+  // All properties are deeply cloned
+  ```
+  </TabItem>
+  <TabItem label="Code">
+  ```typescript
+  /**
+   * Creates a deep clone of value
+   * @param value - The value to clone deeply
+   * @returns A deep clone of the value
+   */
+  function cloneDeep<T>(value: T): T {
+    // Handle primitive values and functions
+    if (value === null || typeof value !== 'object') {
+      return value;
+    }
+    
+    // Handle Date objects
+    if (value instanceof Date) {
+      return new Date(value.getTime()) as unknown as T;
+    }
+    
+    // Handle RegExp objects
+    if (value instanceof RegExp) {
+      return new RegExp(value.source, value.flags) as unknown as T;
+    }
+    
+    // Handle ArrayBuffer
+    if (value instanceof ArrayBuffer) {
+      return value.slice(0) as unknown as T;
+    }
+    
+    // Handle TypedArrays
+    if (
+      ArrayBuffer.isView(value) && 
+      !(value instanceof DataView)
+    ) {
+      // @ts-ignore: TypeScript doesn't know about the constructor property
+      return new value.constructor(
+        value.buffer.slice(0),
+        value.byteOffset,
+        value.length
+      ) as unknown as T;
+    }
+    
+    // Handle Arrays
+    if (Array.isArray(value)) {
+      return value.map(item => cloneDeep(item)) as unknown as T;
+    }
+    
+    // Handle Map objects
+    if (value instanceof Map) {
+      const clonedMap = new Map();
+      value.forEach((val, key) => {
+        clonedMap.set(cloneDeep(key), cloneDeep(val));
+      });
+      return clonedMap as unknown as T;
+    }
+    
+    // Handle Set objects
+    if (value instanceof Set) {
+      const clonedSet = new Set();
+      value.forEach(val => {
+        clonedSet.add(cloneDeep(val));
+      });
+      return clonedSet as unknown as T;
+    }
+    
+    // Handle plain objects
+    const cloned = {} as any;
+    for (const key in value) {
+      if (Object.prototype.hasOwnProperty.call(value, key)) {
+        cloned[key] = cloneDeep((value as any)[key]);
+      }
+    }
+    
+    return cloned;
+  }
+  ```
+  <CopyButton code={`/**
+ * Creates a deep clone of value
+ * @param value - The value to clone deeply
+ * @returns A deep clone of the value
+ */
+function cloneDeep<T>(value: T): T {
+  // Handle primitive values and functions
+  if (value === null || typeof value !== 'object') {
+    return value;
+  }
+  
+  // Handle Date objects
+  if (value instanceof Date) {
+    return new Date(value.getTime()) as unknown as T;
+  }
+  
+  // Handle RegExp objects
+  if (value instanceof RegExp) {
+    return new RegExp(value.source, value.flags) as unknown as T;
+  }
+  
+  // Handle ArrayBuffer
+  if (value instanceof ArrayBuffer) {
+    return value.slice(0) as unknown as T;
+  }
+  
+  // Handle TypedArrays
+  if (
+    ArrayBuffer.isView(value) && 
+    !(value instanceof DataView)
+  ) {
+    // @ts-ignore: TypeScript doesn't know about the constructor property
+    return new value.constructor(
+      value.buffer.slice(0),
+      value.byteOffset,
+      value.length
+    ) as unknown as T;
+  }
+  
+  // Handle Arrays
+  if (Array.isArray(value)) {
+    return value.map(item => cloneDeep(item)) as unknown as T;
+  }
+  
+  // Handle Map objects
+  if (value instanceof Map) {
+    const clonedMap = new Map();
+    value.forEach((val, key) => {
+      clonedMap.set(cloneDeep(key), cloneDeep(val));
+    });
+    return clonedMap as unknown as T;
+  }
+  
+  // Handle Set objects
+  if (value instanceof Set) {
+    const clonedSet = new Set();
+    value.forEach(val => {
+      clonedSet.add(cloneDeep(val));
+    });
+    return clonedSet as unknown as T;
+  }
+  
+  // Handle plain objects
+  const cloned = {} as any;
+  for (const key in value) {
+    if (Object.prototype.hasOwnProperty.call(value, key)) {
+      cloned[key] = cloneDeep((value as any)[key]);
+    }
+  }
+  
+  return cloned;
+}`} />
+  </TabItem>
 </Tabs> 
