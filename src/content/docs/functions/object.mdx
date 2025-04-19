@@ -135,6 +135,81 @@ function pick<T extends object, K extends keyof T>(
   </TabItem>
 </Tabs>
 
+## omit
+
+Creates an object composed of all properties from the input object except those specified in the keys array.
+
+<Tabs>
+  <TabItem label="Usage">
+  ```typescript
+  const object = { a: 1, b: 2, c: 3, d: 4 };
+  const omitted = omit(object, ['a', 'c']);
+  console.log(omitted); // { b: 2, d: 4 }
+  
+  // Works with inherited properties too
+  class Parent {
+    parentProp = 'parent value';
+  }
+  
+  class Child extends Parent {
+    childProp = 'child value';
+  }
+  
+  const instance = new Child();
+  const result = omit(instance, ['childProp']);
+  console.log(result); // { parentProp: 'parent value' }
+  ```
+  </TabItem>
+  <TabItem label="Code">
+  ```typescript
+  /**
+   * Creates an object composed of properties from the input object except those specified in the keys array
+   * @param obj - The source object
+   * @param keys - The property names to omit
+   * @returns New object without the omitted properties
+   */
+  function omit<T extends object, K extends keyof T>(
+    obj: T,
+    keys: K[]
+  ): Omit<T, K> {
+    const result = {} as Omit<T, K>;
+    const keysSet = new Set(keys);
+    
+    // Include both own and inherited properties
+    for (const key in obj) {
+      if (!keysSet.has(key as any)) {
+        result[key as Exclude<keyof T, K>] = obj[key as keyof T];
+      }
+    }
+    
+    return result;
+  }
+  ```
+  <CopyButton code={`/**
+ * Creates an object composed of properties from the input object except those specified in the keys array
+ * @param obj - The source object
+ * @param keys - The property names to omit
+ * @returns New object without the omitted properties
+ */
+function omit<T extends object, K extends keyof T>(
+  obj: T,
+  keys: K[]
+): Omit<T, K> {
+  const result = {} as Omit<T, K>;
+  const keysSet = new Set(keys);
+  
+  // Include both own and inherited properties
+  for (const key in obj) {
+    if (!keysSet.has(key as any)) {
+      result[key as Exclude<keyof T, K>] = obj[key as keyof T];
+    }
+  }
+  
+  return result;
+}`} />
+  </TabItem>
+</Tabs>
+
 ## merge
 
 Deeply merges two objects.
