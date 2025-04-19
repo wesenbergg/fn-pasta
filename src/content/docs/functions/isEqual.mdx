@@ -1,0 +1,304 @@
+---
+title: isEqual Function
+description: Deep comparison between values
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import CopyButton from '../../../components/CopyButton.astro';
+
+# isEqual
+
+Performs a deep comparison between two values to determine if they are equivalent.
+
+<Tabs>
+  <TabItem label="Usage">
+  ```typescript
+  // Compare simple values
+  isEqual(1, 1); // true
+  isEqual('a', 'a'); // true
+  isEqual(true, true); // true
+  
+  // Compare arrays
+  isEqual([1, 2, 3], [1, 2, 3]); // true
+  isEqual([1, 2, 3], [1, 2, 4]); // false
+  
+  // Compare objects
+  isEqual({ a: 1, b: 2 }, { a: 1, b: 2 }); // true
+  isEqual({ a: 1, b: 2 }, { b: 2, a: 1 }); // true (order doesn't matter)
+  isEqual({ a: 1, b: 2 }, { a: 1, b: 3 }); // false
+  
+  // Compare dates
+  const date1 = new Date(2023, 1, 1);
+  const date2 = new Date(2023, 1, 1);
+  isEqual(date1, date2); // true
+  
+  // Compare maps
+  const map1 = new Map([['a', 1], ['b', 2]]);
+  const map2 = new Map([['a', 1], ['b', 2]]);
+  isEqual(map1, map2); // true
+  
+  // Compare sets
+  const set1 = new Set([1, 2, 3]);
+  const set2 = new Set([1, 2, 3]);
+  isEqual(set1, set2); // true
+  ```
+  </TabItem>
+  <TabItem label="Code">
+  ```typescript
+  /**
+   * Performs a deep comparison between two values to determine if they are equivalent.
+   * 
+   * @param value - The value to compare
+   * @param other - The other value to compare
+   * @returns True if the values are equivalent, false otherwise
+   * 
+   * @note This method supports comparing arrays, array buffers, booleans, 
+   * date objects, error objects, maps, numbers, Object objects, regexes, 
+   * sets, strings, symbols, and typed arrays. Object objects are compared 
+   * by their own, not inherited, enumerable properties. Functions and DOM 
+   * nodes are compared by strict equality, i.e. ===.
+   */
+  function isEqual(value: any, other: any): boolean {
+    // Handle simple cases
+    if (value === other) return true;
+    if (value == null || other == null) return false;
+    if (typeof value !== typeof other) return false;
+    
+    // Handle NaN case
+    if (Number.isNaN(value) && Number.isNaN(other)) return true;
+    
+    // Handle special object types
+    const type = Object.prototype.toString.call(value);
+    if (type !== Object.prototype.toString.call(other)) return false;
+    
+    // Date comparison
+    if (value instanceof Date && other instanceof Date) {
+      return value.getTime() === other.getTime();
+    }
+    
+    // RegExp comparison
+    if (value instanceof RegExp && other instanceof RegExp) {
+      return value.toString() === other.toString();
+    }
+    
+    // Error comparison
+    if (value instanceof Error && other instanceof Error) {
+      return value.message === other.message && value.name === other.name;
+    }
+    
+    // Map comparison
+    if (value instanceof Map && other instanceof Map) {
+      if (value.size !== other.size) return false;
+      
+      for (const [key, val] of value) {
+        if (!other.has(key)) return false;
+        if (!isEqual(val, other.get(key))) return false;
+      }
+      
+      return true;
+    }
+    
+    // Set comparison
+    if (value instanceof Set && other instanceof Set) {
+      if (value.size !== other.size) return false;
+      
+      for (const item of value) {
+        let found = false;
+        for (const otherItem of other) {
+          if (isEqual(item, otherItem)) {
+            found = true;
+            break;
+          }
+        }
+        if (!found) return false;
+      }
+      
+      return true;
+    }
+    
+    // ArrayBuffer comparison
+    if (value instanceof ArrayBuffer && other instanceof ArrayBuffer) {
+      const v = new Uint8Array(value);
+      const o = new Uint8Array(other);
+      
+      if (v.length !== o.length) return false;
+      
+      for (let i = 0; i < v.length; i++) {
+        if (v[i] !== o[i]) return false;
+      }
+      
+      return true;
+    }
+    
+    // TypedArray comparison
+    if (
+      ArrayBuffer.isView(value) && 
+      ArrayBuffer.isView(other) && 
+      !(value instanceof DataView) && 
+      !(other instanceof DataView)
+    ) {
+      if (value.length !== other.length) return false;
+      for (let i = 0; i < value.length; i++) {
+        if (value[i] !== other[i]) return false;
+      }
+      return true;
+    }
+    
+    // Array comparison
+    if (Array.isArray(value) && Array.isArray(other)) {
+      if (value.length !== other.length) return false;
+      
+      for (let i = 0; i < value.length; i++) {
+        if (!isEqual(value[i], other[i])) return false;
+      }
+      
+      return true;
+    }
+    
+    // Object comparison
+    if (typeof value === 'object' && typeof other === 'object') {
+      const keysValue = Object.keys(value);
+      const keysOther = Object.keys(other);
+      
+      if (keysValue.length !== keysOther.length) return false;
+      
+      for (const key of keysValue) {
+        if (!Object.prototype.hasOwnProperty.call(other, key)) return false;
+        if (!isEqual(value[key], other[key])) return false;
+      }
+      
+      return true;
+    }
+    
+    return false;
+  }
+  ```
+  <CopyButton code={`/**
+ * Performs a deep comparison between two values to determine if they are equivalent.
+ * 
+ * @param value - The value to compare
+ * @param other - The other value to compare
+ * @returns True if the values are equivalent, false otherwise
+ * 
+ * @note This method supports comparing arrays, array buffers, booleans, 
+ * date objects, error objects, maps, numbers, Object objects, regexes, 
+ * sets, strings, symbols, and typed arrays. Object objects are compared 
+ * by their own, not inherited, enumerable properties. Functions and DOM 
+ * nodes are compared by strict equality, i.e. ===.
+ */
+function isEqual(value: any, other: any): boolean {
+  // Handle simple cases
+  if (value === other) return true;
+  if (value == null || other == null) return false;
+  if (typeof value !== typeof other) return false;
+  
+  // Handle NaN case
+  if (Number.isNaN(value) && Number.isNaN(other)) return true;
+  
+  // Handle special object types
+  const type = Object.prototype.toString.call(value);
+  if (type !== Object.prototype.toString.call(other)) return false;
+  
+  // Date comparison
+  if (value instanceof Date && other instanceof Date) {
+    return value.getTime() === other.getTime();
+  }
+  
+  // RegExp comparison
+  if (value instanceof RegExp && other instanceof RegExp) {
+    return value.toString() === other.toString();
+  }
+  
+  // Error comparison
+  if (value instanceof Error && other instanceof Error) {
+    return value.message === other.message && value.name === other.name;
+  }
+  
+  // Map comparison
+  if (value instanceof Map && other instanceof Map) {
+    if (value.size !== other.size) return false;
+    
+    for (const [key, val] of value) {
+      if (!other.has(key)) return false;
+      if (!isEqual(val, other.get(key))) return false;
+    }
+    
+    return true;
+  }
+  
+  // Set comparison
+  if (value instanceof Set && other instanceof Set) {
+    if (value.size !== other.size) return false;
+    
+    for (const item of value) {
+      let found = false;
+      for (const otherItem of other) {
+        if (isEqual(item, otherItem)) {
+          found = true;
+          break;
+        }
+      }
+      if (!found) return false;
+    }
+    
+    return true;
+  }
+  
+  // ArrayBuffer comparison
+  if (value instanceof ArrayBuffer && other instanceof ArrayBuffer) {
+    const v = new Uint8Array(value);
+    const o = new Uint8Array(other);
+    
+    if (v.length !== o.length) return false;
+    
+    for (let i = 0; i < v.length; i++) {
+      if (v[i] !== o[i]) return false;
+    }
+    
+    return true;
+  }
+  
+  // TypedArray comparison
+  if (
+    ArrayBuffer.isView(value) && 
+    ArrayBuffer.isView(other) && 
+    !(value instanceof DataView) && 
+    !(other instanceof DataView)
+  ) {
+    if (value.length !== other.length) return false;
+    for (let i = 0; i < value.length; i++) {
+      if (value[i] !== other[i]) return false;
+    }
+    return true;
+  }
+  
+  // Array comparison
+  if (Array.isArray(value) && Array.isArray(other)) {
+    if (value.length !== other.length) return false;
+    
+    for (let i = 0; i < value.length; i++) {
+      if (!isEqual(value[i], other[i])) return false;
+    }
+    
+    return true;
+  }
+  
+  // Object comparison
+  if (typeof value === 'object' && typeof other === 'object') {
+    const keysValue = Object.keys(value);
+    const keysOther = Object.keys(other);
+    
+    if (keysValue.length !== keysOther.length) return false;
+    
+    for (const key of keysValue) {
+      if (!Object.prototype.hasOwnProperty.call(other, key)) return false;
+      if (!isEqual(value[key], other[key])) return false;
+    }
+    
+    return true;
+  }
+  
+  return false;
+}`} />
+  </TabItem>
+</Tabs> 
