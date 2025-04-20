@@ -2,7 +2,7 @@
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import react from "@astrojs/react";
-import tailwindcss from "@tailwindcss/vite";
+import vercel from "@astrojs/vercel";
 
 // https://astro.build/config
 export default defineConfig({
@@ -29,11 +29,13 @@ export default defineConfig({
           label: "Functions",
           items: [
             { label: "Array", slug: "functions/array" },
+            { label: "Collection", slug: "functions/collection" },
+            { label: "Date", slug: "functions/date" },
+            { label: "Number", slug: "functions/number" },
             { label: "Object", slug: "functions/object" },
             { label: "String", slug: "functions/string" },
-            { label: "Number", slug: "functions/number" },
-            { label: "Date", slug: "functions/date" },
             { label: "Utility", slug: "functions/utility" },
+            { label: "Value", slug: "functions/value" },
           ],
         },
       ],
@@ -41,4 +43,8 @@ export default defineConfig({
     }),
     react(),
   ],
+  output: "static",
+  adapter: vercel({
+    imageService: true,
+  }),
 });

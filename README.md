@@ -1,54 +1,70 @@
-# Starlight Starter Kit: Basics
+# fn-pasta
 
-[![Built with Starlight](https://astro.badg.es/v2/built-with-starlight/tiny.svg)](https://starlight.astro.build)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-```
-pnpm create astro@latest -- --template starlight
-```
+A collection of utility functions you can copy and paste directly into your JavaScript and TypeScript projects.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/starlight/tree/main/examples/basics)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/starlight/tree/main/examples/basics)
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/withastro/starlight&create_from_path=examples/basics)
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fwithastro%2Fstarlight%2Ftree%2Fmain%2Fexamples%2Fbasics&project-name=my-starlight-docs&repository-name=my-starlight-docs)
+## 🚀 Features
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+- **No Dependencies**: Just copy the function you need. No package installation required.
+- **Well-Documented**: Each function comes with clear documentation and examples.
+- **TypeScript Support**: All functions include TypeScript typings for better developer experience.
+- **Small Footprint**: Only use what you need - no bloat in your codebase.
 
-## 🚀 Project Structure
+## 📦 Function Categories
 
-Inside of your Astro + Starlight project, you'll see the following folders and files:
+- **Array**: Functions for array manipulation, filtering, mapping, and more.
+- **Collection**: Collection-related utility functions.
+- **Date**: Date manipulation and formatting utilities.
+- **Number**: Number-related utility functions.
+- **Object**: Functions for working with objects, deep cloning, merging, and more.
+- **String**: String manipulation, formatting, validation, and more.
+- **Utility**: General purpose utility functions for common tasks.
+- **Value**: Value-checking and transformation utilities.
+
+## 🛠️ Development
+
+### Project Structure
 
 ```
 .
-├── public/
+├── public/                 # Static assets
 ├── src/
-│   ├── assets/
+│   ├── assets/             # Images and other assets
+│   ├── components/         # Reusable UI components
 │   ├── content/
-│   │   ├── docs/
-│   └── content.config.ts
-├── astro.config.mjs
-├── package.json
-└── tsconfig.json
+│   │   ├── docs/           # Documentation content
+│   │       ├── functions/  # Function documentation files
+│   │       ├── guides/     # Usage guides
+│   │       └── index.mdx   # Home page
+│   └── styles/             # CSS styles
+├── astro.config.mjs        # Astro configuration
+├── package.json            # Project dependencies
+└── tsconfig.json           # TypeScript configuration
 ```
 
-Starlight looks for `.md` or `.mdx` files in the `src/content/docs/` directory. Each file is exposed as a route based on its file name.
-
-Images can be added to `src/assets/` and embedded in Markdown with a relative link.
-
-Static assets, like favicons, can be placed in the `public/` directory.
-
-## 🧞 Commands
+### Commands
 
 All commands are run from the root of the project, from a terminal:
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
+| Command        | Action                                       |
+| :------------- | :------------------------------------------- |
+| `pnpm install` | Installs dependencies                        |
+| `pnpm dev`     | Starts local dev server at `localhost:4321`  |
+| `pnpm build`   | Build your production site to `./dist/`      |
+| `pnpm preview` | Preview your build locally, before deploying |
 
-## 👀 Want to learn more?
+## 📝 Usage
 
-Check out [Starlight’s docs](https://starlight.astro.build/), read [the Astro documentation](https://docs.astro.build), or jump into the [Astro Discord server](https://astro.build/chat).
+Visit the documentation site to find the function you need, then simply copy and paste it into your project.
+
+Each function includes:
+
+- Detailed description
+- Type definitions
+- Example usage
+- Edge cases and considerations
+
+## 📄 License
+
+[MIT](LICENSE) © [wesenbergg](https://github.com/wesenbergg)
