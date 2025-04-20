@@ -2,6 +2,21 @@
   "name": "fn-pasta",
   "type": "module",
   "version": "0.0.1",
+  "author": "wesenbergg",
+  "license": "MIT",
+  "description": "A collection of utility functions you can copy and paste directly into your projects",
+  "homepage": "https://github.com/wesenbergg/fn-pasta",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wesenbergg/fn-pasta.git"
+  },
+  "keywords": [
+    "utility",
+    "functions",
+    "copy-paste",
+    "typescript",
+    "javascript"
+  ],
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",

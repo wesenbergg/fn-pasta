@@ -14,7 +14,7 @@ export default defineConfig({
         {
           icon: "github",
           label: "GitHub",
-          href: "https://github.com/yourusername/fn-pasta",
+          href: "https://github.com/wesenbergg/fn-pasta",
         },
       ],
       sidebar: [

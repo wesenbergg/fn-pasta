@@ -1,0 +1,92 @@
+---
+title: Collection Functions
+description: Utility functions for collection manipulation
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import CopyButton from '../../../components/CopyButton.astro';
+
+# Collection Functions
+
+A collection of utility functions for working with collections (arrays and objects).
+
+## keyBy
+
+Creates an object composed of keys generated from the results of running each element of collection through the iteratee function. The corresponding value of each key is the last element responsible for generating the key.
+
+<Tabs>
+  <TabItem label="Usage">
+  ```typescript
+  // With an array of objects
+  const array = [
+    { id: 'a1', name: 'John' },
+    { id: 'b2', name: 'Jane' },
+    { id: 'c3', name: 'Jack' }
+  ];
+  
+  // Using a function that returns the key
+  const keyedById = keyBy(array, item => item.id);
+  console.log(keyedById);
+  // {
+  //   a1: { id: 'a1', name: 'John' },
+  //   b2: { id: 'b2', name: 'Jane' },
+  //   c3: { id: 'c3', name: 'Jack' }
+  // }
+  
+  // Using a property name string
+  const keyedByName = keyBy(array, 'name');
+  console.log(keyedByName);
+  // {
+  //   John: { id: 'a1', name: 'John' },
+  //   Jane: { id: 'b2', name: 'Jane' },
+  //   Jack: { id: 'c3', name: 'Jack' }
+  // }
+  ```
+  </TabItem>
+  <TabItem label="Code">
+  ```typescript
+  /**
+   * Creates an object composed of keys generated from the results of running
+   * each element of collection through the iteratee function.
+   * 
+   * @param collection - The collection to iterate over
+   * @param iteratee - The function or property name to transform keys
+   * @returns The composed aggregate object
+   */
+  function keyBy<T>(
+    collection: T[],
+    iteratee: ((item: T) => string | number) | string
+  ): Record<string | number, T> {
+    return collection.reduce((result, value) => {
+      const key = typeof iteratee === 'function'
+        ? iteratee(value)
+        : (value as any)[iteratee];
+      
+      result[key] = value;
+      return result;
+    }, {} as Record<string | number, T>);
+  }
+  ```
+  <CopyButton code={`/**
+ * Creates an object composed of keys generated from the results of running
+ * each element of collection through the iteratee function.
+ * 
+ * @param collection - The collection to iterate over
+ * @param iteratee - The function or property name to transform keys
+ * @returns The composed aggregate object
+ */
+function keyBy<T>(
+  collection: T[],
+  iteratee: ((item: T) => string | number) | string
+): Record<string | number, T> {
+  return collection.reduce((result, value) => {
+    const key = typeof iteratee === 'function'
+      ? iteratee(value)
+      : (value as any)[iteratee];
+    
+    result[key] = value;
+    return result;
+  }, {} as Record<string | number, T>);
+}`} />
+  </TabItem>
+</Tabs>
