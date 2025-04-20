@@ -90,3 +90,125 @@ function keyBy<T>(
 }`} />
   </TabItem>
 </Tabs>
+
+## orderBy
+
+Creates a new array of elements sorted by multiple iteratees and respective sort orders.
+
+<Tabs>
+  <TabItem label="Usage">
+  ```typescript
+  // With an array of objects
+  const users = [
+    { user: 'fred', age: 48 },
+    { user: 'barney', age: 34 },
+    { user: 'fred', age: 40 },
+    { user: 'barney', age: 36 }
+  ];
+  
+  // Sort by user in ascending order, then by age in descending order
+  const result = orderBy(users, ['user', 'age'], ['asc', 'desc']);
+  console.log(result);
+  // [
+  //   { user: 'barney', age: 36 },
+  //   { user: 'barney', age: 34 },
+  //   { user: 'fred', age: 48 },
+  //   { user: 'fred', age: 40 }
+  // ]
+  
+  // Sort by age in ascending order (default)
+  const ageAsc = orderBy(users, ['age']);
+  console.log(ageAsc);
+  // [
+  //   { user: 'barney', age: 34 },
+  //   { user: 'barney', age: 36 },
+  //   { user: 'fred', age: 40 },
+  //   { user: 'fred', age: 48 }
+  // ]
+  
+  // Using functions as iteratees
+  const funcResult = orderBy(users, 
+    [user => user.user, user => user.age], 
+    ['asc', 'desc']
+  );
+  console.log(funcResult);
+  // Same result as first example
+  ```
+  </TabItem>
+  <TabItem label="Code">
+  ```typescript
+  /**
+   * Creates an array of elements, sorted in ascending or descending order by the results
+   * of running each element through each iteratee. This method implements a stable sort.
+   * 
+   * @param collection - The collection to iterate over
+   * @param iteratees - The iteratees to sort by, either property names or functions
+   * @param orders - The sort orders of iteratees, either 'asc' or 'desc'
+   * @returns The new sorted array
+   */
+  function orderBy<T>(
+    collection: T[],
+    iteratees: Array<((item: T) => any) | string> = [],
+    orders: Array<'asc' | 'desc'> = []
+  ): T[] {
+    // Create a copy to avoid mutating the original array
+    const result = [...collection];
+    
+    return result.sort((a, b) => {
+      for (let i = 0; i < iteratees.length; i++) {
+        const iteratee = iteratees[i];
+        const order = orders[i] === 'desc' ? -1 : 1;
+        
+        // Get values for comparison
+        const valueA = typeof iteratee === 'function' 
+          ? iteratee(a) 
+          : (a as any)[iteratee];
+        const valueB = typeof iteratee === 'function' 
+          ? iteratee(b) 
+          : (b as any)[iteratee];
+        
+        if (valueA < valueB) return -1 * order;
+        if (valueA > valueB) return 1 * order;
+      }
+      return 0;
+    });
+  }
+  ```
+  <CopyButton code={`/**
+ * Creates an array of elements, sorted in ascending or descending order by the results
+ * of running each element through each iteratee. This method implements a stable sort.
+ * 
+ * @param collection - The collection to iterate over
+ * @param iteratees - The iteratees to sort by, either property names or functions
+ * @param orders - The sort orders of iteratees, either 'asc' or 'desc'
+ * @returns The new sorted array
+ */
+function orderBy<T>(
+  collection: T[],
+  iteratees: Array<((item: T) => any) | string> = [],
+  orders: Array<'asc' | 'desc'> = []
+): T[] {
+  // Create a copy to avoid mutating the original array
+  const result = [...collection];
+  
+  return result.sort((a, b) => {
+    for (let i = 0; i < iteratees.length; i++) {
+      const iteratee = iteratees[i];
+      const order = orders[i] === 'desc' ? -1 : 1;
+      
+      // Get values for comparison
+      const valueA = typeof iteratee === 'function' 
+        ? iteratee(a) 
+        : (a as any)[iteratee];
+      const valueB = typeof iteratee === 'function' 
+        ? iteratee(b) 
+        : (b as any)[iteratee];
+      
+      if (valueA < valueB) return -1 * order;
+      if (valueA > valueB) return 1 * order;
+    }
+    return 0;
+  });
+}`} />
+  </TabItem>
+</Tabs>
